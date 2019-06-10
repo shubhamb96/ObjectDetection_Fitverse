@@ -1,0 +1,58 @@
+  {
+    "images":[
+  {
+  “name”:“banana”,
+  “calorie”:“89”,
+  “protein”:“1.1 g”,
+  “fact”:“free of fat and cholesterol”
+  },
+  {
+  “name”:“capsicum”,
+  “calorie”:“40”,
+  “protein”:“2 g”,
+  “fact”:“good source of vitamin A and C”
+  },
+  {
+  “name”:“broccoli”,
+  “calorie”:“34”,
+  “protein”:“2.8 g”,
+  “fact”:“good source of vitamin K, vitamin C and Folic Acid”
+  },
+  {
+  “name”:“cucumber”,
+  “calorie”:“15.54”,
+  “protein”:“0.65 g”,
+  “fact”:“good source of potassium”
+  },
+  {
+  “name”:“greenApple”,
+  “calorie”:“52”,
+  “protein”:“0 g”,
+  “fact”:“low in carbs”
+  },
+  {
+  “name”:“strawberry”,
+  “calorie”:“33”,
+  “protein”:“0.67 g”,
+  “fact”:“ rich in vitamin C”
+  },
+  {
+  “name”:“pineapple”,
+  “calorie”:“50”,
+  “protein”:“0.5 g”,
+  “fact”:“ rich in manganese”
+  },
+  {
+  “name”:“cauliflower”,
+  “calorie”:“25”,
+  “protein”:“1.9 g”,
+  “fact”:“ low in saturated fat and cholesterol”
+  },
+  {
+  “name”:“butternutSquash”,
+  “calorie”:“45”,
+  “protein”:“1 g”,
+  “fact”:“ good source of potassium and vitamin E”
+  }
+  ]
+  }
