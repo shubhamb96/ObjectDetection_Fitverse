@@ -89,7 +89,7 @@ public class Calorie {
                     break;
             }
         }
-            return "Name: " + fname + "\n" + "Detected: " + num + "\n" + "Total Calorie:" + calorie * num + "\n" + "Total Protien: " + protein * num + "\n" + "Facts: " + fact;
+            return "Name: " + fname + "\n" + "Detected: " + num + "\n" + "Total Calorie:" + calorie * num +"\t" + "per 100gm" + "\n" + "Total Protien: " + protein * num +"\t" + "per 100gm" + "\n" + "Facts: " + fact;
         }
 
 
