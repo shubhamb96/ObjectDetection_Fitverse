@@ -20,7 +20,7 @@ public class Recognition {
     private final Float confidence;
 
     /**
-     * Location within the source image for the location of the recognized object.
+     * Location within the source logo for the location of the recognized object.
      */
     private RectF location;
 

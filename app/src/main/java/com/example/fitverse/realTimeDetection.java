@@ -30,9 +30,16 @@ import static io.fotoapparat.parameter.selector.LensPositionSelectors.lensPositi
 import static io.fotoapparat.parameter.selector.Selectors.firstAvailable;
 import static io.fotoapparat.parameter.selector.SizeSelectors.biggestSize;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * This class is responsible for implementing the
+ * real-time detection of the objects. This is done
+ * using the Fotoapparat API which breaks down the
+ * captured logo into frames.
+ * Source: https://github.com/RedApparat/Fotoapparat
+ */
+public class realTimeDetection extends AppCompatActivity {
 
-    private static String TAG = "MainActivity";
+    private static String TAG = "realTimeDetection";
 
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     private boolean hasCameraPermission;
@@ -43,10 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtView;
 
 
-
-
     private void showToast(final String text) {
-        final Activity activity = MainActivity.this;
+        final Activity activity = realTimeDetection.this;
         if (activity != null) {
             activity.runOnUiThread(
                     new Runnable() {
@@ -58,11 +63,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_realtime_detection);
 
         cameraView = findViewById(R.id.camera_view);
         recognitionView = findViewById(R.id.recognition_view);
@@ -80,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     }
-
 
     private Fotoapparat createFotoapparat() {
         Fotoapparat camera;

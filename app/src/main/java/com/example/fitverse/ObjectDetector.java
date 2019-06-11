@@ -22,18 +22,19 @@ import java.util.PriorityQueue;
 import java.util.Vector;
 
 /**
- * Wrapper for frozen detection models trained using the Tensorflow Object Detection API:
- * github.com/tensorflow/models/tree/master/research/object_detection
+ * Wrapper for frozen detection models trained using the Tensorflow Object Detection API
+ * Source: github.com/tensorflow/models/tree/master/research/object_detection
  */
-public class ObjectDetector extends MainActivity {
+public class ObjectDetector extends realTimeDetection {
     private static final String TAG = "ObjectDetector";
     // Only return this many results.
     private static final int MAX_RESULTS = 100;
     public static final int INPUT_SIZE = 300;
-    private static final String MODEL_FILE = "file:///android_asset/shubham_final.pb";
-    private static final String LABELS_FILE = "file:///android_asset/fruitlabels.txt";
+    private static final String MODEL_FILE = "file:///android_asset/frozen_inference_graph.pb";
+    private static final String LABELS_FILE = "file:///android_asset/labels.txt";
     private static ObjectDetector sObjectDetector = null;
-    public static ObjectDetector get(final Context context){
+
+    public static ObjectDetector get(final Context context) {
         if (sObjectDetector == null) {
             sObjectDetector = new ObjectDetector(
                     context, MODEL_FILE, LABELS_FILE, INPUT_SIZE);
@@ -54,7 +55,7 @@ public class ObjectDetector extends MainActivity {
     /**
      * Initializes a native TensorFlow session for classifying images.
      *
-     * @param context  The context, used for its asset manager and toast showing.
+     * @param context       The context, used for its asset manager and toast showing.
      * @param modelFilename The filepath of the model GraphDef protocol buffer.
      * @param labelFilename The filepath of label file for classes.
      */
@@ -73,7 +74,7 @@ public class ObjectDetector extends MainActivity {
                 this.labels.add(line);
             }
             br.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             Toast toast = Toast.makeText(
                     context, "cannot read assets, reinstall the app", Toast.LENGTH_SHORT);
             toast.show();
@@ -84,10 +85,11 @@ public class ObjectDetector extends MainActivity {
         final Graph g = this.inferenceInterface.graph();
 
         this.inputName = "image_tensor";
-        // The inputName node has a shape of [N, H, W, C], where
-        // N is the batch size
-        // H = W are the height and width
-        // C is the number of channels (3 for our purposes - RGB)
+        /** The inputName node has a shape of [N, H, W, C], where
+        * N is the batch size
+        * H = W are the height and width
+         *   C is the number of channels (3 for our purposes - RGB)
+        */
         final Operation inputOp = g.operation(this.inputName);
         if (inputOp == null) {
             throw new RuntimeException("Failed to find input Node '" + this.inputName + "'");
@@ -116,9 +118,9 @@ public class ObjectDetector extends MainActivity {
 
     public synchronized List<Recognition> recognizeImage(final Bitmap bitmap) {
 
-        int []intValues = new int[this.inputSize * this.inputSize];
-        byte []byteValues = new byte[this.inputSize * this.inputSize * 3];
-        // Preprocess the image data from 0-255 int to normalized float based
+        int[] intValues = new int[this.inputSize * this.inputSize];
+        byte[] byteValues = new byte[this.inputSize * this.inputSize * 3];
+        // Preprocess the logo data from 0-255 int to normalized float based
         // on the provided parameters.
         bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 
@@ -136,10 +138,10 @@ public class ObjectDetector extends MainActivity {
         inferenceInterface.run(outputNames, false);
 
         // Copy the output Tensor back into the output array.
-        float []outputLocations = new float[MAX_RESULTS * 4];
-        float []outputScores = new float[MAX_RESULTS];
-        float []outputClasses = new float[MAX_RESULTS];
-        float []outputNumDetections = new float[1];
+        float[] outputLocations = new float[MAX_RESULTS * 4];
+        float[] outputScores = new float[MAX_RESULTS];
+        float[] outputClasses = new float[MAX_RESULTS];
+        float[] outputNumDetections = new float[1];
         inferenceInterface.fetch(outputNames[0], outputLocations);
         inferenceInterface.fetch(outputNames[1], outputScores);
         inferenceInterface.fetch(outputNames[2], outputClasses);

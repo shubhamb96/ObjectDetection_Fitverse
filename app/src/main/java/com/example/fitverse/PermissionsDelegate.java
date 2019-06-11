@@ -7,8 +7,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-/*
-This class gets all the permissions from the user, which are required to start the camera activity
+/**
+ * This class gets all the permissions from the user, which are required to start the camera activity
  */
 
 class PermissionsDelegate {

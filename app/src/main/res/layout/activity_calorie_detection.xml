@@ -51,7 +51,7 @@
         android:layout_marginRight="44dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/button"
-        android:text="gallery"
+        android:text="upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"

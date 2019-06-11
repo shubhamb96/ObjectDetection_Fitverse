@@ -39,9 +39,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
-
-public class image_upload extends AppCompatActivity {
+/**
+ * This class is responsible for calculating the number
+ * of calories and other nutrients present in the food.
+ */
+public class calorieDetection extends AppCompatActivity {
     private final PermissionsDelegate permissionsDelegate = new PermissionsDelegate(this);
     private ImageView img;
     private Button detect;
@@ -52,39 +54,42 @@ public class image_upload extends AppCompatActivity {
     private static final String IMAGE_DIRECTORY = "/demonuts";
     private Bitmap bitmap;
     private ObjectDetector detector = null;
+    private boolean hasCameraPermission ;
 
 
+    /**
+     * This function is responsible for passing the
+     * bitmap values to get the recognitions
+     *
+     * @param bitmap
+     */
+    public void RecognizeTakenPhotoTask(Bitmap bitmap) {
 
-        public void RecognizeTakenPhotoTask(Bitmap bitmap) {
-
-            recognitions = Utils.getImageRecognitionResult(
-                    detector, bitmap, 0.3f);
-            int rotation = Utils.getRotation(90);
-            Matrix matrix = new Matrix();
-            matrix.setRotate(rotation);
-            Bitmap rotatedBitmap = null;
-            if (rotation != 0) {
-                rotatedBitmap = Bitmap.createBitmap(
-                        bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-            } else {
-                rotatedBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-            }
-            Canvas canvas = new Canvas(rotatedBitmap);
-            Paint rectPaint = new Paint();
-            Paint textPaint = new Paint();
-            float textSize = Utils.setAttributes(
-                    image_upload.this, rectPaint, textPaint);
-            Utils.drawRecognitions(canvas, recognitions, rectPaint, textPaint, textSize);
-
+        recognitions = Utils.getImageRecognitionResult(
+                detector, bitmap, 0.3f);
+        int rotation = Utils.getRotation(90);
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotation);
+        Bitmap rotatedBitmap = null;
+        if (rotation != 0) {
+            rotatedBitmap = Bitmap.createBitmap(
+                    bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        } else {
+            rotatedBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         }
+        Canvas canvas = new Canvas(rotatedBitmap);
+        Paint rectPaint = new Paint();
+        Paint textPaint = new Paint();
+        float textSize = Utils.setAttributes(
+                calorieDetection.this, rectPaint, textPaint);
+        Utils.drawRecognitions(canvas, recognitions, rectPaint, textPaint, textSize);
 
-
-
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.imageupload);
+        setContentView(R.layout.activity_calorie_detection);
         img = (ImageView) findViewById(R.id.imageView);
         detect = (Button) findViewById(R.id.button);
         gallery = (Button) findViewById(R.id.button3);
@@ -99,12 +104,13 @@ public class image_upload extends AppCompatActivity {
                 showPictureDialog();
             }
         });
-
-
     }
 
-
-
+    /**
+     * This function is responsible for letting the
+     * user choose whether to upload an logo from
+     * the gallery or the cammera
+     */
     private void showPictureDialog() {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
         pictureDialog.setTitle("Select Action");
@@ -128,6 +134,10 @@ public class image_upload extends AppCompatActivity {
         pictureDialog.show();
     }
 
+    /**
+     * The logo has been been chosen from the gallery
+     * and the activity is started
+     */
     public void choosePhotoFromGallary() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -135,13 +145,22 @@ public class image_upload extends AppCompatActivity {
         startActivityForResult(galleryIntent, GALLERY);
     }
 
+    /**
+     * The logo is clicked from the camera
+     */
     private void takePhotoFromCamera() {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, CAMERA);
+        hasCameraPermission = permissionsDelegate.hasCameraPermission();
+
+        if (hasCameraPermission) {
+            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, CAMERA);
+        } else {
+            permissionsDelegate.requestCameraPermission();
+        }
+
     }
 
-
-
+    // This methos is used to get the image from gallery or from the camera
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -155,12 +174,10 @@ public class image_upload extends AppCompatActivity {
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
                     String path = saveImage(bitmap);
-                    Toast.makeText(image_upload.this, "Image Saved!", Toast.LENGTH_SHORT).show();
-
-
+                    Toast.makeText(calorieDetection.this, "Image Saved!", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(image_upload.this, "Failed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(calorieDetection.this, "Failed!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -168,22 +185,22 @@ public class image_upload extends AppCompatActivity {
             bitmap = (Bitmap) data.getExtras().get("data");
 
             //saveImage(bitmap);
-            Toast.makeText(image_upload.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(calorieDetection.this, "Image Saved!", Toast.LENGTH_SHORT).show();
         }
         img.setImageBitmap(bitmap);
         detect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String text = "";
-                String fact =" ";
+                String fact = " ";
                 RecognizeTakenPhotoTask(bitmap);
                 HashMap<String, Integer> res = Utils.PrintCalorie(recognitions);
                 Iterator re = res.entrySet().iterator();
                 while (re.hasNext()) {
                     Map.Entry finalresult = (Map.Entry) re.next();
                     System.out.println(finalresult.getValue());
-                    fact = (String)finalresult.getKey();
-                    text += Calorie.countcalorie(fact,(int)finalresult.getValue()) + "\n" + "\n";
+                    fact = (String) finalresult.getKey();
+                    text += displayNutrients.countCalorie(fact, (int) finalresult.getValue()) + "\n" + "\n";
 
                 }
                 System.out.println(text);
@@ -193,39 +210,39 @@ public class image_upload extends AppCompatActivity {
         });
     }
 
-
-
-        public String saveImage (Bitmap myBitmap){
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-            File wallpaperDirectory = new File(
-                    Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
-            // have the object build the directory structure, if needed.
-            if (!wallpaperDirectory.exists()) {
-                wallpaperDirectory.mkdirs();
-            }
-
-            try {
-                File f = new File(wallpaperDirectory, Calendar.getInstance()
-                        .getTimeInMillis() + ".jpg");
-                f.createNewFile();
-                FileOutputStream fo = new FileOutputStream(f);
-                fo.write(bytes.toByteArray());
-                MediaScannerConnection.scanFile(this,
-                        new String[]{f.getPath()},
-                        new String[]{"image/jpeg"}, null);
-                fo.close();
-                Log.d("TAG", "File Saved::---&gt;" + f.getAbsolutePath());
-
-                return f.getAbsolutePath();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            return "";
+    /**
+     * Image is saved
+     *
+     * @param myBitmap
+     * @return
+     */
+    public String saveImage(Bitmap myBitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File wallpaperDirectory = new File(
+                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+        // have the object build the directory structure, if needed.
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs();
         }
+        try {
+            File f = new File(wallpaperDirectory, Calendar.getInstance()
+                    .getTimeInMillis() + ".jpg");
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            MediaScannerConnection.scanFile(this,
+                    new String[]{f.getPath()},
+                    new String[]{"logo/jpeg"}, null);
+            fo.close();
+            Log.d("TAG", "File Saved::---&gt;" + f.getAbsolutePath());
 
-
-
+            return f.getAbsolutePath();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
+    }
 
 }
 

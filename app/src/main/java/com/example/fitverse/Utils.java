@@ -8,40 +8,35 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.List;
 
-/*
-This class is the utility class which does various functions such as:
-1. Paints the rectangle for real time detection
-2. Get the list of recognitions
-3. Get the calories for food detected.
+/**
+ * This class is the utility class which does various functions such as:
+ * 1. Paints the rectangle for real time detection
+ * 2. Get the list of recognitions
+ * 3. Get the calories for food detected.
  */
-
-
-
 
 public class Utils {
     private static final String TAG = "Utils";
     Context context;
 
-    public void Utils(Context context)
-    {
+    public void Utils(Context context) {
         this.context = context;
     }
 
     /**
-     *
      * @param frameRotation
      * @return rotation
      */
 
-    public static int getRotation(int frameRotation){
+    public static int getRotation(int frameRotation) {
         int rotation = 0;
-        switch (frameRotation)
-        {
+        switch (frameRotation) {
             case 270:
                 rotation = 90;
                 break;
@@ -54,6 +49,7 @@ public class Utils {
         }
         return rotation;
     }
+
     private static Matrix getTransformationMatrix(
             final int srcWidth,
             final int srcHeight,
@@ -64,10 +60,10 @@ public class Utils {
 
         if (applyRotation != 0) {
             if (applyRotation % 90 != 0) {
-                Log.w(TAG, "Rotation of " + applyRotation +" % 90 != 0");
+                Log.w(TAG, "Rotation of " + applyRotation + " % 90 != 0");
             }
 
-            // Translate so center of image is at origin.
+            // Translate so center of logo is at origin.
             matrix.postTranslate(-srcWidth / 2.0f, -srcHeight / 2.0f);
 
             // Rotate around origin.
@@ -98,7 +94,6 @@ public class Utils {
     }
 
     /**
-     *
      * @param canvas
      * @param recognitions
      * @param rectPaint
@@ -107,8 +102,7 @@ public class Utils {
      */
     public static void drawRecognitions(
             Canvas canvas, List<Recognition> recognitions, Paint rectPaint,
-            Paint textPaint, float textSize){
-
+            Paint textPaint, float textSize) {
 
 
         for (Recognition recognition : recognitions) {
@@ -132,7 +126,6 @@ public class Utils {
     }
 
     /**
-     *
      * @param objectDetector
      * @param image
      * @param frameRotation
@@ -140,8 +133,8 @@ public class Utils {
      * @return
      */
     public static List<Recognition>
-    getRecognitionResult (ObjectDetector objectDetector, Bitmap image,
-                          int frameRotation, float minimumConfidence){
+    getRecognitionResult(ObjectDetector objectDetector, Bitmap image,
+                         int frameRotation, float minimumConfidence) {
         int inputSize = ObjectDetector.INPUT_SIZE;
         int rotation = getRotation(frameRotation);
         Matrix matrix = getTransformationMatrix(
@@ -163,8 +156,7 @@ public class Utils {
         final List<Recognition> recognitions = objectDetector.recognizeImage(recognitionImage);
 
         final List<Recognition> results = new ArrayList<>();
-        for (Recognition recognition : recognitions)
-        {
+        for (Recognition recognition : recognitions) {
             if (recognition.getConfidence() >= minimumConfidence) {
                 RectF location = recognition.getLocation();
                 float left = location.left / inWidth;
@@ -183,15 +175,14 @@ public class Utils {
     }
 
     /**
-     *
      * @param objectDetector
      * @param image
      * @param minimumConfidence
      * @return recognised results
      */
     public static List<Recognition>
-    getImageRecognitionResult (ObjectDetector objectDetector, Bitmap image,
-                           float minimumConfidence){
+    getImageRecognitionResult(ObjectDetector objectDetector, Bitmap image,
+                              float minimumConfidence) {
         int inputSize = ObjectDetector.INPUT_SIZE;
 
         Matrix matrix = getTransformationMatrix(
@@ -199,7 +190,6 @@ public class Utils {
                 inputSize, inputSize, 90);
         Bitmap resizedImage = Bitmap.createBitmap(image, 0, 0,
                 image.getWidth(), image.getHeight(), matrix, false);
-
 
 
         Bitmap recognitionImage = Bitmap.createBitmap(
@@ -210,8 +200,7 @@ public class Utils {
         final List<Recognition> recognitions = objectDetector.recognizeImage(recognitionImage);
 
         final List<Recognition> results = new ArrayList<>();
-        for (Recognition recognition : recognitions)
-        {
+        for (Recognition recognition : recognitions) {
             if (recognition.getConfidence() >= minimumConfidence) {
                 RectF location = recognition.getLocation();
                 float left = location.left / image.getWidth();
@@ -230,13 +219,12 @@ public class Utils {
     }
 
     /**
-     *
      * @param results
      * @return HashMap of detected class and number of detection
      */
 
-    public static  HashMap<String, Integer> PrintCalorie(
-            List<Recognition> results ) {
+    public static HashMap<String, Integer> PrintCalorie(
+            List<Recognition> results) {
 
         System.out.println(results);
 
@@ -247,29 +235,26 @@ public class Utils {
             ) {
                 if (!observation.containsKey(res.getTitle())) {
                     observation.put(res.getTitle(), 1);
-                }
-                    else
-                    {
+                } else {
                     observation.put(res.getTitle(), observation.get(res.getTitle()) + 1);
 
                 }
             }
 
 
-            }
+        }
 
         return observation;
     }
 
     /**
-     *
      * @param context
      * @param rectPaint
      * @param textPaint
      * @return
      */
-    public static float setAttributes(Context context, Paint rectPaint, Paint textPaint){
-        Resources resources= context.getResources();
+    public static float setAttributes(Context context, Paint rectPaint, Paint textPaint) {
+        Resources resources = context.getResources();
         rectPaint.setColor(resources.getColor(R.color.colorRect));
         rectPaint.setStrokeWidth(resources.getDimensionPixelSize(R.dimen.rect_stroke_size));
         rectPaint.setStyle(Paint.Style.STROKE);

@@ -15,9 +15,8 @@ import io.fotoapparat.preview.Frame;
 import io.fotoapparat.preview.FrameProcessor;
 
 /**
- * {@link FrameProcessor} which detects faces on camera frames.
- * <p>
- * Use {@link #getBuilder()} to create a new instance.
+ * PreviewDetectionProcessor is a class which detects objects on camera frames.
+ * Use  to create a new instance.
  */
 public class PreviewDetectionProcessor implements FrameProcessor {
 
@@ -30,7 +29,7 @@ public class PreviewDetectionProcessor implements FrameProcessor {
     private final ObjectDetector objectDetector;
     private final OnObjectsDetectedListener listener;
 
-    private PreviewDetectionProcessor(Builder builder){
+    private PreviewDetectionProcessor(Builder builder) {
         objectDetector = builder.objectDetector;
         listener = builder.listener;
     }
@@ -50,7 +49,7 @@ public class PreviewDetectionProcessor implements FrameProcessor {
 
         byte[] imageBytes = out.toByteArray();
         Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-         List<Recognition> results = Utils.getRecognitionResult(
+        List<Recognition> results = Utils.getRecognitionResult(
                 objectDetector, image, frame.rotation, MINIMUM_CONFIDENCE);
 
         MAIN_THREAD_HANDLER.post(() -> listener.onObjectsDetected(results));
@@ -107,7 +106,7 @@ public class PreviewDetectionProcessor implements FrameProcessor {
             return this;
         }
 
-        public PreviewDetectionProcessor build(){
+        public PreviewDetectionProcessor build() {
             return new PreviewDetectionProcessor(this);
         }
 

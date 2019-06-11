@@ -1,19 +1,16 @@
 package com.example.fitverse;
 
-/*
-This class is used to get the nutritional facts about the class
+/**
+ * This class is used to get the nutritional facts
  */
-
-public class Calorie {
-
-
+public class displayNutrients {
     /**
-     *
+     * Counts the number of calories present and displays
      * @param fruit
      * @param num
      * @return String of nutritional facts
      */
-    public static String countcalorie(String fruit, int num) {
+    public static String countCalorie(String fruit, int num) {
         String fname = "";
         String fact = "";
         double protein = 0;
@@ -89,8 +86,7 @@ public class Calorie {
                     break;
             }
         }
-            return "Name: " + fname + "\n" + "Detected: " + num + "\n" + "Total Calorie:" + calorie * num +"\t" + "per 100gm" + "\n" + "Total Protien: " + protein * num +"\t" + "per 100gm" + "\n" + "Facts: " + fact;
-        }
-
+        return "Name: " + fname + "\n" + "Detected: " + num + "\n" + "Total Calories (Per 100gm):" + calorie * num + "\n" + "Total Protein (Per 100gm): " + protein * num + "\n" + "Facts: " + fact;
+    }
 
 }

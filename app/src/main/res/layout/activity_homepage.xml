@@ -51,7 +51,7 @@
         android:layout_height="328dp"
         android:layout_marginBottom="32dp"
         android:contentDescription="@string/logo"
-        android:src="@drawable/image"
+        android:src="@drawable/logo"
         app:layout_constraintBottom_toTopOf="@+id/camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
